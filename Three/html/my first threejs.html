@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>My first three.js app</title>
+  <style>
+    body { margin: 0; }
+  </style>
+</head>
+<h3>들어가며</h3>
+<p>웹 페이지를 공부하고 개발하면서... 어느 사이트에 들어갔다.</p>
+<p>망치로 머리를 맞은 것 같았다... 그 이유는 css로 구현할 수가 없을 것 같은 3D 화면의 웹페이지들..</p>
+<p>알고보니 css가 아닌 WebGL로 구현한 것...</p>
+<p>이렇게 나와 WebGL간의 인연이 시작되었다.</p>
+<body>
+<script src="../js/three.js"></script>
+<script>
+
+  /**
+   * 3D 스크린 설정
+   */
+  const scene = new THREE.Scene();
+
+  /**
+   * 3D 카메라 설정
+   * @type {PerspectiveCamera}(Fov, 해상도, zNear, zFar)
+   * FOV is extent of the scene that is seen on the display at any given moment. The value is in degrees.
+   * 해상도 is aspect ratio
+   * zNear and zFar is that objects further away from the camera
+   */
+  const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+  /**
+   * 렌더링 설정
+   * 기존 WebGL 렌더링과는 몇가지 다른 기능이 추가되었는데 WebGl을 지원하지 않는 브라우저에서도 WebGL을 사용케 함
+  * @type {WebGLRenderer}
+  */
+  const renderer = new THREE.WebGLRenderer();
+
+  /**
+   * 렌더링 공간 설정
+   * 렌더링 할 공간을 설정합니다. 아래같은 경우는 기존 디바이스의 넓이와 높이값을 설정했습니다.
+   */
+  renderer.setSize( window.innerWidth, window.innerHeight );
+
+  /**
+   * 이제 html Body 태그에 넣어 실행시켜 봅시다.
+   */
+  document.body.appendChild( renderer.domElement );
+
+  /**
+   * Object 의 Box vertices 가 있는 큐브
+   */
+  const geometry = new THREE.BoxGeometry();
+
+  /**
+   *  Geometry 의 Mesh 속성 설정
+   */
+  const material = new THREE.MeshBasicMaterial({color: 0xff00});
+
+  /**
+   * Mesh is an object that takes a geometry, and applies a material to it,
+   * which we then can insert to our scene, and move freely around.
+   */
+  const cube = new THREE.Mesh(geometry, material);
+
+  /**
+   * The cube we add will be added to the coordinates(0, 0, 0).
+   */
+  scene.add(cube);
+
+  /**
+   * 카메라 Z축을 5로 변경
+   * 즉 카메라를 Cube를 기준으로 뒤로 뺀 것
+   */
+  camera.position.z = 5;
+
+
+  /**
+   * 렌더링 시키는 함수
+   * 이 함수를 실행시키지 않으면 화면에 아무런 object 도 보이지 않음
+   * 랜더링 될 때마다 scene을 새롭게 그림(초당 60회)
+   * requestAnimationFrame은 setInterval()함수보다 성능이 뛰어나 사용자가 다른 브라우저 탭으로 이동할 때 방해가 없음
+   */
+  function animate() {
+    requestAnimationFrame( animate );
+
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
+
+    renderer.render( scene, camera );
+  }
+
+  animate();
+</script>
+</body>
+</html>
