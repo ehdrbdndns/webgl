@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="reset.css">
+  <title>그리기</title>
+</head>
+
+<body>
+  <div class="container">
+    <canvas id="canvas" height="480" width="640"></canvas>
+    <div class="ui">
+      <div class="ui-group">
+        <label for="btn-reset">그림판 초기화</label>
+        <button id="btn-reset">초기화</button>
+      </div>
+      <div class="ui-group">
+        <label>그림 모드 선택</label>
+        <ul class="select-mode">
+          <li class="mode-btn selected">Points</li>
+          <li class="mode-btn">Lines</li>
+          <li class="mode-btn">Line_strip</li>
+          <li class="mode-btn">Line_Loop</li>
+          <li class="mode-btn">Triangles</li>
+          <li class="mode-btn">Triangle_strip</li>
+          <li class="mode-btn">Triangle_fan</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js" integrity="sha512-zhHQR0/H5SEBL3Wn6yYSaTTZej12z0hVZKOv3TwCUXT1z5qeqGcXJLLrbERYRScEDDpYIJhPC1fk31gqR783iQ==" crossorigin="anonymous" defer></script>
+  <script src="index.js"></script>
+</body>
+
+</html>
