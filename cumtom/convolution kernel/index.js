@@ -19,25 +19,98 @@
     }`;
 
     let fragmentShaderSource = `#version 300 es
-    
+ 
     precision highp float;
-    
+
     uniform sampler2D u_image;
-    
+  
+    uniform float u_kernel[9];
+    uniform float u_kernelWeight;
+ 
     in vec2 v_texCoord;
-    
+ 
     out vec4 outColor;
-    
-    void main(){
-        outColor = texture(u_image, v_texCoord);
+     
+    void main() {
+      vec2 onePixel = vec2(1) / vec2(textureSize(u_image, 0));
+     
+      vec4 colorSum =
+          texture(u_image, v_texCoord + onePixel * vec2(-1, -1)) * u_kernel[0] +
+          texture(u_image, v_texCoord + onePixel * vec2( 0, -1)) * u_kernel[1] +
+          texture(u_image, v_texCoord + onePixel * vec2( 1, -1)) * u_kernel[2] +
+          texture(u_image, v_texCoord + onePixel * vec2(-1,  0)) * u_kernel[3] +
+          texture(u_image, v_texCoord + onePixel * vec2( 0,  0)) * u_kernel[4] +
+          texture(u_image, v_texCoord + onePixel * vec2( 1,  0)) * u_kernel[5] +
+          texture(u_image, v_texCoord + onePixel * vec2(-1,  1)) * u_kernel[6] +
+          texture(u_image, v_texCoord + onePixel * vec2( 0,  1)) * u_kernel[7] +
+          texture(u_image, v_texCoord + onePixel * vec2( 1,  1)) * u_kernel[8] ;
+      outColor = vec4((colorSum / u_kernelWeight).rgb, 1);
     }`;
 
     //쉐이더 프로그램의 정보를 담는 객체
-    let shaderProgram;
+    let programInfo = {}, canvas, gl, edgeDetectKernel, shaderProgram, kernelMode = "normal";
 
-    let programInfo = {}, canvas, gl;
+    function getKernelOption() {
+        switch (kernelMode) {
+            case "normal":
+                edgeDetectKernel = [
+                    0, 0, 0,
+                    0, 1, 0,
+                    0, 0, 0
+                ];
+                break;
+            case "sharpen":
+                edgeDetectKernel = [
+                    0, -1, 0,
+                    -1, 5, -1,
+                    0, -1, 0
+                ];
+                break;
+            case "blur":
+                edgeDetectKernel = [
+                    1, 1, 1,
+                    1, 1, 1,
+                    1, 1, 1
+                ];
+                break;
+            case "edge_enhance":
+                edgeDetectKernel = [
+                    0, 0, 0,
+                    -1, 1, 0,
+                    0, 0, 0
+                ];
+                break;
+            case "edge_detect":
+                edgeDetectKernel = [
+                    0, 1, 0,
+                    1, -4, 1,
+                    0, 1, 0
+                ];
+                break;
+            case "emboss":
+                edgeDetectKernel = [
+                    -2, -1, 0,
+                    -1, 1, 1,
+                    0, 1, 2
+                ];
+                break;
+            default:
+                edgeDetectKernel = [
+                    0, 0, 0,
+                    0, 1, 0,
+                    0, 0, 0
+                ];
+        }
+    }
 
-    function setRectangle(gl, x, y, width, height){
+    function computeKernelWeight(kernel) {
+        var weight = kernel.reduce(function (prev, curr) {
+            return prev + curr;
+        });
+        return weight <= 0 ? 1 : weight;
+    }
+
+    function setRectangle(gl, x, y, width, height) {
         let x1 = x;
         let x2 = x + width;
         let y1 = y;
@@ -113,6 +186,10 @@
 
         gl.bindVertexArray(vao);
 
+        getKernelOption();
+
+        gl.uniform1fv(programInfo.uniformLocations.u_kernel, edgeDetectKernel);
+        gl.uniform1f(programInfo.uniformLocations.u_kernelWeight, computeKernelWeight(edgeDetectKernel));
         gl.uniform2f(programInfo.uniformLocations.u_resolution, gl.canvas.width, gl.canvas.height);
         gl.uniform1i(programInfo.uniformLocations.u_image, 0);
 
@@ -138,7 +215,9 @@
             },
             uniformLocations: {
                 u_resolution: gl.getUniformLocation(shaderProgram, "u_resolution"),
-                u_image: gl.getUniformLocation(shaderProgram, "u_image")
+                u_image: gl.getUniformLocation(shaderProgram, "u_image"),
+                u_kernel: gl.getUniformLocation(shaderProgram, "u_kernel[0]"),
+                u_kernelWeight: gl.getUniformLocation(shaderProgram, "u_kernelWeight")
             }
         };
     }
@@ -148,7 +227,15 @@
         bindBuffer(image);
     }
 
+    function clickEventFromSelect(e){
+        kernelMode = e.target.value;
+        main();
+    }
+
     function main() {
+        let select = document.querySelector(".kernel-option");
+        select.addEventListener("change", clickEventFromSelect);
+
         const image = new Image();
         image.src = "./img/leaves.jpg";
         image.onload = function () {
