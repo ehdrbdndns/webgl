@@ -32,25 +32,10 @@
       1.0, 1.0, 1.0, 1.0
     ];
 
-    const ANGLE_PER_SECOND = 45.0;
-
     let programInfo, vertexArrayList = [], colorArrayList = [],
-        angle = 0, vertexSize = 0, last = Date.now();
+        angle = 0, vertexSize = 0;
 
     function setAngle() {
-        // var now = Date.now();
-        // // how many milliseconds have passed; we must use this because the time
-        // // between animation steps may be different.
-        // console.log(now);
-        //
-        // var time = now - last;
-        // console.log(time);
-        // last = now;
-        // // return the new return angle given how many seconds have passed
-        // // % 360 to ensure the angle is < 360 degrees.
-        // angle = angle + (ANGLE_PER_SECOND * time) / 1000.0 % 360;
-        // console.log(angle);
-        //
         angle += 0.5;
         angle = angle % 360;
         let radian = Math.PI * angle / 180.0;
@@ -119,7 +104,7 @@
 
         //fsShader
         const fsShader = gl.createShader(gl.FRAGMENT_SHADER);
-        gl.shaderSource(fsShader, fsSource);
+        gl.shaderSource(fsShletader, fsSource);
         gl.compileShader(fsShader);
 
         let program = gl.createProgram();
