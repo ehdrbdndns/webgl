@@ -3,16 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <title>3D object</title>
-    <style>
-        #canvas{
-            width: 100vw;
-            height: 100vh;
-            display: block;
-        }
-    </style>
+    <link rel="stylesheet" href="index.css">
 </head>
 <body>
-<canvas id="canvas"></canvas>
+<div class="container">
+    <canvas id="canvas"></canvas>
+    <div class="animation-container">
+        <ul class="animation-ui">
+            <li><input type="range" min="0" max="400" step="0.5" data-id="tx" value="0">xTranslate</li>
+            <li><input type="range" min="0" max="400" step="0.5" data-id="ty" value="0">yTranslate</li>
+            <li><input type="range" min="0" max="400" step="0.5" data-id="tz" value="0">zTranslate</li>
+            <li><input type="range" min="0" max="360" step="0.5" data-id="rx" value="0">xRotate</li>
+            <li><input type="range" min="0" max="360" step="0.5" data-id="ry" value="0">yRotate</li>
+            <li><input type="range" min="0" max="360" step="0.5" data-id="rz" value="0">zRotate</li>
+            <li><input type="range" min="-5" max="5" step="0.01" data-id="sx" value="1">xScale</li>
+            <li><input type="range" min="-5" max="5" step="0.01" data-id="sy" value="1">yScale</li>
+            <li><input type="range" min="-5" max="5" step="0.01" data-id="sz" value="1">zScale</li>
+        </ul>
+        <div class="ui-group">
+            <label>그림 모드 선택</label>
+            <ul class="select-mode">
+                <li class="mode-btn">Points</li>
+                <li class="mode-btn">Lines</li>
+                <li class="mode-btn">Line_strip</li>
+                <li class="mode-btn">Line_Loop</li>
+                <li class="mode-btn selected">Triangles</li>
+                <li class="mode-btn">Triangle_strip</li>
+                <li class="mode-btn">Triangle_fan</li>
+            </ul>
+        </div>
+    </div>
+</div>
 
 <script src="https://webgl2fundamentals.org/webgl/resources/webgl-utils.js"></script>
 <script src="../vendor/readFile.js"></script>

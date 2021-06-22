@@ -1,6 +1,23 @@
 (function(){
 
     let program, programInfo, gl;
+    let tx = 0, ty = 0, tz = 0, rx = 0, ry = 0, rz = 0, sx = 1, sy = 1, sz = 1;
+    let drawMode;
+    function makeRadian(deg){
+        return deg * Math.PI /180;
+    }
+
+    function setAnimationMatrix(){
+        //1. 행렬 생성
+        let u_matrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 400);
+        u_matrix = m4.translate(u_matrix, tx, ty, tz);
+        u_matrix = m4.xRotate(u_matrix, makeRadian(rx));
+        u_matrix = m4.yRotate(u_matrix, makeRadian(ry));
+        u_matrix = m4.zRotate(u_matrix, makeRadian(rz));
+        u_matrix = m4.scale(u_matrix, sx, sy, sz);
+
+        return u_matrix;
+    }
 
     function draw(){
         //TODO vao
@@ -51,14 +68,7 @@
         gl.vertexAttribPointer(programInfo.attribLocations.a_color, numberComponents, type, normalize, stride, offset);
 
         //TODO uniform
-        //1. 행렬 생성
-        let u_matrix = m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 400);
-
-        // //2. 애니메이션 적용
-        u_matrix = m4.translate(u_matrix, 300, 200, 1);
-        u_matrix = m4.yRotate(u_matrix, -100);
-
-        //3. uniform 전송
+        let u_matrix = setAnimationMatrix();
         gl.uniformMatrix4fv(programInfo.uniformLocations.u_matrix, false, u_matrix);
 
         //TODO 그리기
@@ -67,7 +77,6 @@
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
         //2. canvas 컬러 및 깊이 픽셀 초기화
-        gl.clear(0, 0, 0, 0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         //3. CULL 설정(정면만 보기)
@@ -83,7 +92,7 @@
         gl.bindVertexArray(vao);
 
         //7. 그리기
-        gl.drawArrays(gl.TRIANGLES, 0, 16 * 6);
+        gl.drawArrays(drawMode, 0, 16 * 6);
     }
 
     function searchDataLocation(program){
@@ -114,9 +123,97 @@
         return webglUtils.createProgramFromSources(gl, [vertexShaderSource, fragmentShaderSource]);
     }
 
+    function setAnimationValue(e){
+        let data_id = e.target.dataset.id;
+        let value = e.target.value;
+
+        switch (data_id) {
+            case "tx":
+                tx = value;
+                break;
+            case "ty":
+                ty = value;
+                break;
+            case "tz":
+                tz = value;
+                break;
+            case "rx":
+                rx = value;
+                break;
+            case "ry":
+                ry = value;
+                break;
+            case "rz":
+                rz = value;
+                break;
+            case "sx":
+                sx = value;
+                break;
+            case "sy":
+                sy = value;
+                break;
+            case "sz":
+                sz = value;
+                break;
+            default:
+                console.log("잘못된 data-id");
+        }
+    }
+
+    function changeModeOfDraw(e) {
+        const targetBtn = e.target;
+        if (targetBtn.parentNode.classList.contains("select-mode")) {
+            const selectedBtn = document.querySelector(".select-mode li.selected");
+            selectedBtn.classList.remove("selected");
+
+            targetBtn.classList.add("selected");
+            switch (targetBtn.innerHTML) {
+                case "Points":
+                    drawMode = gl.POINTS;
+                    break;
+                case "Lines":
+                    drawMode = gl.LINES;
+                    break;
+                case "Line_strip":
+                    drawMode = gl.LINE_STRIP;
+                    break;
+                case "Line_Loop":
+                    drawMode = gl.LINE_LOOP;
+                    break;
+                case "Triangles":
+                    drawMode = gl.TRIANGLES;
+                    break;
+                case "Triangle_strip":
+                    drawMode = gl.TRIANGLE_STRIP;
+                    break;
+                case "Triangle_fan":
+                    drawMode = gl.TRIANGLE_FAN;
+                    break;
+                default:
+                    alert("해당 모드가 없습니다.");
+            }
+            draw();
+        }
+    }
+
+    function manageEvent(){
+        let animationUi = document.querySelector(".animation-ui");
+        animationUi.addEventListener("input", function(e){
+            setAnimationValue(e);
+            draw();
+        });
+
+        let drawModeBtn = document.querySelector(".select-mode");
+        drawModeBtn.addEventListener("click", changeModeOfDraw);
+
+        window.addEventListener("resize", draw);
+    }
+
     function init(){
         program = createProgram();
         programInfo = searchDataLocation(program);
+        drawMode = gl.TRIANGLES
+        manageEvent();
         draw();
     }
 
