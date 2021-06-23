@@ -1,4 +1,12 @@
 var m4 = {
+    makeZToWMatrix: function(fudgeFactor) {
+        return [
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, fudgeFactor,
+            0, 0, 0, 1,
+        ];
+    },
 
     projection: function(width, height, depth) {
         // Note: This matrix flips the Y axis so 0 is at the top.
