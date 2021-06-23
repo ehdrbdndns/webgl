@@ -1,7 +1,7 @@
 (function(){
 
     let program, programInfo, gl;
-    let tx = 0, ty = 0, tz = 0, rx = 0, ry = 0, rz = 0, sx = 1, sy = 1, sz = 1, fF = 1;
+    let tx = 0, ty = 0, tz = -360, rx = 0, ry = 0, rz = 0, sx = 1, sy = 1, sz = 1, fF = 120;
     let drawMode;
     function makeRadian(deg){
         return deg * Math.PI /180;
@@ -9,7 +9,10 @@
 
     function setAnimationMatrix(){
         //1. 행렬 생성
-        let u_matrix = m4.makeZToWMatrix(fF);
+        let aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+        let zNear = 1;
+        let zFar = 2000;
+        let u_matrix = m4.perspective(fF, aspect, zNear, zFar);
         u_matrix = m4.multiply(u_matrix, m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 400));
         u_matrix = m4.translate(u_matrix, tx, ty, tz);
         u_matrix = m4.xRotate(u_matrix, makeRadian(rx));
