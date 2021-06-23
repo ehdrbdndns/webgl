@@ -104,7 +104,7 @@
 
         //fsShader
         const fsShader = gl.createShader(gl.FRAGMENT_SHADER);
-        gl.shaderSource(fsShletader, fsSource);
+        gl.shaderSource(fsShader, fsSource);
         gl.compileShader(fsShader);
 
         let program = gl.createProgram();
