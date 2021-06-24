@@ -119,7 +119,6 @@
 
     function createProgram(){
         let canvas = document.getElementById("canvas");
-        canvas = document.getElementById("canvas");
         gl = canvas.getContext("webgl2");
         if (!gl) {
             alert("webgl2 를 가지고 올 수 없습니다.");
