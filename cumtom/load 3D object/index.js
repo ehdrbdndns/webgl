@@ -1,18 +1,21 @@
 (function(){
 
     let program, programInfo, gl;
-    let tx = 0, ty = 0, tz = -360, rx = 0, ry = 0, rz = 0, sx = 1, sy = 1, sz = 1, fF = 120;
+    let tx, ty, tz, rx, ry, rz, sx, sy, sz, fF;
     let drawMode;
     function makeRadian(deg){
         return deg * Math.PI /180;
     }
 
-    function setAnimationMatrix(){
-        //1. 행렬 생성
+    function setCameraMatrix(){
         let aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
         let zNear = 1;
         let zFar = 2000;
-        let u_matrix = m4.perspective(fF, aspect, zNear, zFar);
+        return m4.perspective(fF, aspect, zNear, zFar);
+    }
+
+    function setAnimationMatrix(u_matrix){
+        //1. 행렬 생성
         u_matrix = m4.multiply(u_matrix, m4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 400));
         u_matrix = m4.translate(u_matrix, tx, ty, tz);
         u_matrix = m4.xRotate(u_matrix, makeRadian(rx));
@@ -71,8 +74,11 @@
         offset = 0;
         gl.vertexAttribPointer(programInfo.attribLocations.a_color, numberComponents, type, normalize, stride, offset);
 
-        //TODO uniform
-        let u_matrix = setAnimationMatrix();
+        //TODO camera
+        let u_matrix = setCameraMatrix();
+
+        //TODO animation
+        u_matrix = setAnimationMatrix(u_matrix);
         gl.uniformMatrix4fv(programInfo.uniformLocations.u_matrix, false, u_matrix);
 
         //TODO 그리기
@@ -83,19 +89,16 @@
         //2. canvas 컬러 및 깊이 픽셀 초기화
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-        //3. CULL 설정(정면만 보기)
-        gl.enable(gl.CULL_FACE);
-
-        //4. DEPTH_TEST(깊이 픽셀 적용)
+        //3. DEPTH_TEST(깊이 픽셀 적용)
         gl.enable(gl.DEPTH_TEST);
 
-        //5. 사용할 프로그램 선택
+        //4. 사용할 프로그램 선택
         gl.useProgram(programInfo.program);
 
-        //6. 사용할 vertexArray 선택
+        //5. 사용할 vertexArray 선택
         gl.bindVertexArray(vao);
 
-        //7. 그리기
+        //6. 그리기
         gl.drawArrays(drawMode, 0, 16 * 6);
     }
 
@@ -127,10 +130,7 @@
         return webglUtils.createProgramFromSources(gl, [vertexShaderSource, fragmentShaderSource]);
     }
 
-    function setAnimationValue(e){
-        let data_id = e.target.dataset.id;
-        let value = e.target.value;
-
+    function changeUIDataValue(data_id, value){
         switch (data_id) {
             case "tx":
                 tx = value;
@@ -165,6 +165,13 @@
             default:
                 console.log("잘못된 data-id");
         }
+    }
+
+    function setAnimationValue(e){
+        let data_id = e.target.dataset.id;
+        let value = e.target.value;
+
+        changeUIDataValue(data_id, value);
     }
 
     function changeModeOfDraw(e) {
@@ -216,10 +223,26 @@
         window.addEventListener("resize", draw);
     }
 
+    function setValue(){
+        let dataList = document.getElementsByClassName("data");
+        for(let i = 0; i <dataList.length; i++){
+            let data = dataList[i];
+            let data_id = data.dataset.id;
+            let value = data.value;
+            changeUIDataValue(data_id, value);
+        }
+        // dataList.forEach(function(data){
+        //     let data_id = data.dataset.id;
+        //     let value = data.value;
+        //     changeUIDataValue(data_id, value);
+        // });
+    }
+
     function init(){
         program = createProgram();
         programInfo = searchDataLocation(program);
-        drawMode = gl.TRIANGLES
+        drawMode = gl.TRIANGLES;
+        setValue();
         manageEvent();
         draw();
     }
