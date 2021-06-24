@@ -1,6 +1,6 @@
 function createProgram(gl){
-    const vertexShaderSource = readTextFile("./shader/vertex.glsl");
-    const fragmentShaderSource = readTextFile("./shader/fragment.glsl");
+    const vertexShaderSource = readTextFile("shader/vertex.glsl");
+    const fragmentShaderSource = readTextFile("shader/fragment.glsl");
     return webglUtils.createProgramFromSources(gl, [vertexShaderSource, fragmentShaderSource]);
 }
 
@@ -34,7 +34,7 @@ function initWebgl() {
     program = createProgram(gl);
     programInfo = searchDataLocation(gl, program);
 
-    console.log("hi~");
+    console.log(programInfo);
 
     return {
         gl: gl,

@@ -230,11 +230,6 @@
             let value = data.value;
             changeUIDataValue(data_id, value);
         }
-        // dataList.forEach(function(data){
-        //     let data_id = data.dataset.id;
-        //     let value = data.value;
-        //     changeUIDataValue(data_id, value);
-        // });
     }
 
     function init(){
