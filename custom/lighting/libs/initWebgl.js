@@ -18,7 +18,9 @@ function searchDataLocation(gl, program){
             u_worldInverseTranspose: gl.getUniformLocation(program, "u_worldInverseTranspose"),
             u_color: gl.getUniformLocation(program, "u_color"),
             u_world: gl.getUniformLocation(program, "u_world"),
-            u_lightWorldPosition: gl.getUniformLocation(program, "u_lightWorldPosition")
+            u_lightWorldPosition: gl.getUniformLocation(program, "u_lightWorldPosition"),
+            u_viewWorldPosition: gl.getUniformLocation(program, "u_viewWorldPosition"),
+            u_shininess: gl.getUniformLocation(program, "u_shininess")
         }
     }
 }

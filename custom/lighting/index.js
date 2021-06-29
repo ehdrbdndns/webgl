@@ -3,7 +3,7 @@
 
     let objectRotateY,
         cameraPositionX, cameraPositionY, cameraPositionZ,
-        lightPositionX, lightPositionY, lightPositionZ;
+        lightPositionX, lightPositionY, lightPositionZ, shininess;
 
     let fieldOfViewDeg = 60, fRotation = 0;
 
@@ -47,14 +47,20 @@
 
         let worldViewProjection = m4.multiply(viewProjectionMatrix, worldMatrix);
 
-        //4. worldMarix 전달
+        //4. u_viewWorldPosition(카메라) 전달
+        gl.uniform3fv(shaderProgramInfo.programInfo.uniformLocations.u_viewWorldPosition, camera);
+
+        //5. worldMarix 전달
         gl.uniformMatrix4fv(shaderProgramInfo.programInfo.uniformLocations.u_world, false, worldMatrix);
 
-        //5. worldViewProjection 전달
+        //6. worldViewProjection 전달
         gl.uniformMatrix4fv(shaderProgramInfo.programInfo.uniformLocations.u_worldViewProjection, false, worldViewProjection);
 
-        //6. world 전달(object 회전 시 조명도 동일하게 적용하기 위함)
+        //7. world 전달(object 회전 시 조명도 동일하게 적용하기 위함)
         gl.uniformMatrix4fv(shaderProgramInfo.programInfo.uniformLocations.u_worldInverseTranspose, false, wordInverseTransposeMatrix);
+
+        //8. shininess 전달(밝기)
+        gl.uniform1f(shaderProgramInfo.programInfo.uniformLocations.u_shininess, shininess);
 
         //TODO 조명 생성
         //1. 조명 위치 설정(3차원)
@@ -138,6 +144,10 @@
                 break;
             case "LightPositionZ":
                 lightPositionZ = value;
+                break;
+            case "Shininess":
+                console.log(value);
+                shininess = value;
                 break;
             default:
                 console.log("잘못된 data-id");

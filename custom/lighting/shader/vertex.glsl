@@ -5,8 +5,10 @@ in vec3 a_normal;
 
 out vec3 v_normal;
 out vec3 v_surfaceToLight;
+out vec3 v_surfaceToView;
 
 uniform vec3 u_lightWorldPosition;
+uniform vec3 u_viewWorldPosition;
 
 uniform mat4 u_world;
 uniform mat4 u_worldViewProjection;
@@ -20,4 +22,6 @@ void main() {
     vec3 surfaceWorldPosition = (u_world * a_position).xyz;
 
     v_surfaceToLight = u_lightWorldPosition - surfaceWorldPosition;
+
+    v_surfaceToView = u_viewWorldPosition - surfaceWorldPosition;
 }
