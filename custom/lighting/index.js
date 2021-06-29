@@ -38,12 +38,20 @@
         let viewProjectionMatrix = m4.multiply(projectionMatrix, viewMatrix);
 
         //3. animation 적용
-        let matrix = m4.yRotate(viewProjectionMatrix, degToRad(fRotation));
+        let matrix = m4.yRotation(degToRad(fRotation));
         matrix = m4.translate(matrix, -50, -75, -15);
         matrix = m4.xRotate(matrix, degToRad(objectRotateY));
 
-        //4. uniform에 복사
-        gl.uniformMatrix4fv(shaderProgramInfo.programInfo.uniformLocations.u_matrix, false, matrix);
+        let wordInverseMatrix = m4.inverse(matrix);
+        let wordInverseTransposeMatrix = m4.transpose(wordInverseMatrix);
+
+        let worldViewProjection = m4.multiply(viewProjectionMatrix, matrix);
+
+        //4. worldViewProjection 전달
+        gl.uniformMatrix4fv(shaderProgramInfo.programInfo.uniformLocations.u_worldViewProjection, false, worldViewProjection);
+
+        //5. world 전달(object 회전 시 조명도 동일하게 적용하기 위함)
+        gl.uniformMatrix4fv(shaderProgramInfo.programInfo.uniformLocations.u_worldInverseTranspose, false, wordInverseTransposeMatrix);
 
         //TODO 조명 생성
         //1. 조명 위치 설정(3차원)

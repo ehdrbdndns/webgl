@@ -14,7 +14,8 @@ function searchDataLocation(gl, program){
             a_normal: gl.getAttribLocation(program, "a_normal")
         },
         uniformLocations: {
-            u_matrix: gl.getUniformLocation(program, "u_matrix"),
+            u_worldViewProjection: gl.getUniformLocation(program, "u_worldViewProjection"),
+            u_worldInverseTranspose: gl.getUniformLocation(program, "u_worldInverseTranspose"),
             u_color: gl.getUniformLocation(program, "u_color"),
             u_reverseLightDirection: gl.getUniformLocation(program, "u_reverseLightDirection")
         }
