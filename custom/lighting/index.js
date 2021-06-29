@@ -1,6 +1,10 @@
 (function(){
     let shaderProgramInfo, gl, a_positionLocation, a_normalLocation, programLocation;
 
+    let objectRotateY,
+        cameraPositionX, cameraPositionY, cameraPositionZ,
+        lightPositionX, lightPositionY, lightPositionZ;
+
     let fieldOfViewDeg = 60, fRotation = 0;
 
     function degToRad(d){
@@ -25,8 +29,8 @@
         let projectionMatrix = m4.perspective(degToRad(fieldOfViewDeg), aspect, zNear, zFar);
 
         //2. 카메라 뷰 생성
-        let camera = [100, 150, 200];
-        let target = [0, 35, 0];
+        let camera = [cameraPositionX, cameraPositionY, cameraPositionZ];
+        let target = [0, -60, 100];
         let up = [0, 1, 0];
         let cameraMatrix = m4.lookAt(camera, target, up);
 
@@ -35,15 +39,15 @@
 
         //3. animation 적용
         let matrix = m4.yRotate(viewProjectionMatrix, degToRad(fRotation));
-        matrix = m4.translate(matrix, -200, 100, -100);
-        matrix = m4.xRotate(matrix, degToRad(180));
+        matrix = m4.translate(matrix, -50, -75, -15);
+        matrix = m4.xRotate(matrix, degToRad(objectRotateY));
 
         //4. uniform에 복사
         gl.uniformMatrix4fv(shaderProgramInfo.programInfo.uniformLocations.u_matrix, false, matrix);
 
         //TODO 조명 생성
         //1. 조명 위치 설정(3차원)
-        let lightPosition = [0.5, 0.7, 0.1];
+        let lightPosition = [lightPositionX, lightPositionY, lightPositionZ];
         //2. uniform에 복사
         gl.uniform3fv(shaderProgramInfo.programInfo.uniformLocations.u_reverseLightDirection, m4.normalize(lightPosition));
 
@@ -100,10 +104,62 @@
         gl.vertexAttribPointer(a_normalLocation, numberComponents, type, normalize, stride, offset);
     }
 
+    function changeUIDataValue(data_id, value){
+        switch (data_id) {
+            case "ObjectRotateY":
+                objectRotateY = value;
+                break;
+            case "CameraPositionX":
+                cameraPositionX = value;
+                break;
+            case "CameraPositionY":
+                cameraPositionY = value;
+                break;
+            case "CameraPositionZ":
+                cameraPositionZ = value;
+                break;
+            case "LightPositionX":
+                lightPositionX = value;
+                break;
+            case "LightPositionY":
+                lightPositionY = value;
+                break;
+            case "LightPositionZ":
+                lightPositionZ = value;
+                break;
+            default:
+                console.log("잘못된 data-id");
+        }
+    }
+
+    function setAnimationValue(e){
+        let data_id = e.target.dataset.id;
+        let value = e.target.value;
+        // e.target.parentNode.childNodes[0].innerText = value;
+
+        changeUIDataValue(data_id, value);
+    }
+
     function windowResize(){
+        let animationUi = document.querySelector(".animation-ui");
+        animationUi.addEventListener("input", function(e){
+            setAnimationValue(e);
+            draw();
+        });
+
         window.addEventListener("resize", function(){
             draw();
         })
+    }
+
+    function setValue(){
+        let dataList = document.getElementsByClassName("data");
+        for(let i = 0; i <dataList.length; i++){
+            let data = dataList[i];
+            let data_id = data.dataset.id;
+            let value = data.value;
+            changeUIDataValue(data_id, value);
+        }
     }
 
     function main(){
@@ -113,6 +169,7 @@
         a_normalLocation = shaderProgramInfo.programInfo.attribLocations.a_normal;
         programLocation = shaderProgramInfo.program;
 
+        setValue();
         setBuffer();
         windowResize();
         draw();

@@ -10,7 +10,16 @@
     <canvas id="canvas"></canvas>
     <div class="animation-container">
         <ul class="animation-ui">
-            <li><input type="range" min="0" max="360" step="0.1" data-id="yR" class="data" value="0">yRotate</li>
+            <p>물체</p>
+            <li><div class="dataValue"></div><input type="range" min="0" max="360" step="0.1" data-id="ObjectRotateY" class="data" value="180">yRotate</li>
+            <p>카메라</p>
+            <li><div class="dataValue"></div><input type="range" min="-1000" max="1000" step="1" data-id="CameraPositionX" class="data" value="0">xPosition</li>
+            <li><div class="dataValue"></div><input type="range" min="-1000" max="1000" step="1" data-id="CameraPositionY" class="data" value="0">yPosition</li>
+            <li><div class="dataValue"></div><input type="range" min="-1000" max="1000" step="1" data-id="CameraPositionZ" class="data" value="600">zPosition</li>
+            <p>조명</p>
+            <li><div class="dataValue"></div><input type="range" min="0" max="1" step="0.01" data-id="LightPositionX" class="data" value="1">xPosition</li>
+            <li><div class="dataValue"></div><input type="range" min="0" max="1" step="0.01" data-id="LightPositionY" class="data" value="0.9">yPosition</li>
+            <li><div class="dataValue"></div><input type="range" min="0" max="1" step="0.01" data-id="LightPositionZ" class="data" value="0.8">zPosition</li>
         </ul>
     </div>
 </div>
@@ -18,7 +27,6 @@
 <script src="../vendor/readFile.js"></script>
 <script src="libs/bufferData.js"></script>
 <script src="https://webgl2fundamentals.org/webgl/resources/m4.js"></script>
-<!--<script src="libs/matrix.js"></script>-->
 <script src="libs/initWebgl.js"></script>
 <script src="index.js"></script>
 </body>

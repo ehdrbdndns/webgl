@@ -16,6 +16,7 @@
 
 .animation-ui{
     list-style: none;
+    width: 250px;
 }
 
 .ui-group{
@@ -45,4 +46,8 @@
 .select-mode li:hover, .select-mode li.selected{
     background: rgb(236, 255, 145);
     color: rgb(23, 19, 15);
+}
+
+.dataValue{
+    display: inline;
 }
