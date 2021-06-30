@@ -1,7 +1,7 @@
 (function(){
     let shaderProgramInfo, gl, a_positionLocation, a_normalLocation, programLocation;
 
-    let objectRotateY,
+    let objectRotateY, objectRotateX,
         cameraPositionX, cameraPositionY, cameraPositionZ,
         lightPositionX, lightPositionY, lightPositionZ, shininess;
 
@@ -38,9 +38,9 @@
         let viewProjectionMatrix = m4.multiply(projectionMatrix, viewMatrix);
 
         //3. animation 적용
-        let worldMatrix = m4.yRotation(degToRad(fRotation));
+        let worldMatrix = m4.yRotation(degToRad(objectRotateY));
+        worldMatrix = m4.xRotate(worldMatrix, degToRad(objectRotateX));
         worldMatrix = m4.translate(worldMatrix, -50, -75, -15);
-        worldMatrix = m4.xRotate(worldMatrix, degToRad(objectRotateY));
 
         let wordInverseMatrix = m4.inverse(worldMatrix);
         let wordInverseTransposeMatrix = m4.transpose(wordInverseMatrix);
@@ -126,6 +126,9 @@
         switch (data_id) {
             case "ObjectRotateY":
                 objectRotateY = value;
+                break;
+            case "ObjectRotateX":
+                objectRotateX = value;
                 break;
             case "CameraPositionX":
                 cameraPositionX = value;

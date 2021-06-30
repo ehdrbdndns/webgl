@@ -11,6 +11,7 @@ out vec4 outColor;
 uniform vec4 u_color;
 uniform float u_shininess;
 
+
 void main() {
     vec3 normal = normalize(v_normal);
 
