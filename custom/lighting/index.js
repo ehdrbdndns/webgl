@@ -3,9 +3,7 @@
 
     let objectRotateY, objectRotateX,
         cameraPositionX, cameraPositionY, cameraPositionZ,
-        lightPositionX, lightPositionY, lightPositionZ, shininess;
-
-    let fieldOfViewDeg = 60, fRotation = 0;
+        lightPositionX, lightPositionY, lightPositionZ, shininess, innerLimit, outerLimit;
 
     function degToRad(d){
         return d * Math.PI / 180;
@@ -23,6 +21,7 @@
 
        //TODO 뷰 생성
         //1. projection 행렬
+        let fieldOfViewDeg = 60;
         let aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
         let zNear = 1;
         let zFar = 2000;
@@ -30,7 +29,7 @@
 
         //2. 카메라 뷰 생성
         let camera = [cameraPositionX, cameraPositionY, cameraPositionZ];
-        let target = [0, -60, 100];
+        let target = [0, 35, 0];
         let up = [0, 1, 0];
         let cameraMatrix = m4.lookAt(camera, target, up);
 
@@ -42,15 +41,17 @@
         worldMatrix = m4.xRotate(worldMatrix, degToRad(objectRotateX));
         worldMatrix = m4.translate(worldMatrix, -50, -75, -15);
 
+        // object를 카메라 절두체 앞으로 위치시키고 animation 까지 적용
+        let worldViewProjection = m4.multiply(viewProjectionMatrix, worldMatrix);
+
+        // 법선 재설정
         let wordInverseMatrix = m4.inverse(worldMatrix);
         let wordInverseTransposeMatrix = m4.transpose(wordInverseMatrix);
-
-        let worldViewProjection = m4.multiply(viewProjectionMatrix, worldMatrix);
 
         //4. u_viewWorldPosition(카메라) 전달
         gl.uniform3fv(shaderProgramInfo.programInfo.uniformLocations.u_viewWorldPosition, camera);
 
-        //5. worldMarix 전달
+        //5. worldMarix 전달(object 위치)
         gl.uniformMatrix4fv(shaderProgramInfo.programInfo.uniformLocations.u_world, false, worldMatrix);
 
         //6. worldViewProjection 전달
@@ -61,6 +62,14 @@
 
         //8. shininess 전달(밝기)
         gl.uniform1f(shaderProgramInfo.programInfo.uniformLocations.u_shininess, shininess);
+
+        //9. 빛 방향 설정
+        let lightDirection = [0, 0, 1];
+        gl.uniform3fv(shaderProgramInfo.programInfo.uniformLocations.u_lightDirection, lightDirection);
+
+        //10. 빛 제한 범위 설정
+        gl.uniform1f(shaderProgramInfo.programInfo.uniformLocations.u_innerLimit, Math.cos(innerLimit));
+        gl.uniform1f(shaderProgramInfo.programInfo.uniformLocations.u_outerLimit, Math.cos(outerLimit));
 
         //TODO 조명 생성
         //1. 조명 위치 설정(3차원)
@@ -149,8 +158,13 @@
                 lightPositionZ = value;
                 break;
             case "Shininess":
-                console.log(value);
                 shininess = value;
+                break;
+            case "InnerLimit":
+                innerLimit = degToRad(value);
+                break;
+            case "OuterLimit":
+                outerLimit = degToRad(value);
                 break;
             default:
                 console.log("잘못된 data-id");

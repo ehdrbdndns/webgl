@@ -20,7 +20,10 @@ function searchDataLocation(gl, program){
             u_world: gl.getUniformLocation(program, "u_world"),
             u_lightWorldPosition: gl.getUniformLocation(program, "u_lightWorldPosition"),
             u_viewWorldPosition: gl.getUniformLocation(program, "u_viewWorldPosition"),
-            u_shininess: gl.getUniformLocation(program, "u_shininess")
+            u_shininess: gl.getUniformLocation(program, "u_shininess"),
+            u_lightDirection: gl.getUniformLocation(program, "u_lightDirection"),
+            u_innerLimit: gl.getUniformLocation(program, "u_innerLimit"),
+            u_outerLimit: gl.getUniformLocation(program, "u_outerLimit"),
         }
     }
 }
