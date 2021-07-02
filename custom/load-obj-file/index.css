@@ -1,0 +1,53 @@
+#canvas{
+    width: 100vw;
+    height: 100vh;
+    display: block;
+}
+
+.container{
+    position: relative;
+}
+
+.animation-container{
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.animation-ui{
+    list-style: none;
+    width: 250px;
+}
+
+.ui-group{
+    width: 200px;
+    padding: 2rem;
+}
+
+#btn-reset{
+    display: block;
+    margin-top: 1rem;
+}
+
+.select-mode{
+    list-style: none;
+}
+
+.select-mode li{
+    display: inline-block;
+    padding: 3px 5px;
+    color: white;
+    background: gray;
+    outline: 2px solid black;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+.select-mode li:hover, .select-mode li.selected{
+    background: rgb(236, 255, 145);
+    color: rgb(23, 19, 15);
+}
+
+.dataValue{
+    display: inline;
+}
