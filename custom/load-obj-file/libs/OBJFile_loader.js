@@ -8,9 +8,9 @@ function getObjFileText(filePath){
 }
 
 function insertVertexBuffer(vertexArray, vertexBuffer, vertexIndex){
-    vertexBuffer.push(vertexArray[vertexIndex].x * 20);
-    vertexBuffer.push(vertexArray[vertexIndex].y * 20);
-    vertexBuffer.push(vertexArray[vertexIndex].z * 20);
+    vertexBuffer.push(vertexArray[vertexIndex].x);
+    vertexBuffer.push(vertexArray[vertexIndex].y);
+    vertexBuffer.push(vertexArray[vertexIndex].z);
 }
 
 function insertTextureBuffer(textureArray, textureBuffer, textureCoordsIndex){
